@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import random
 import os
-from flask import Flask, Response
+from flask import Flask, Response, render_template
 
 __author__ = 'aleksandarvaricak'
 
@@ -670,4 +670,9 @@ def get_previous_game(session_id=None):
 if __name__ == "__main__":
     # sess = GameSession(sid=111111)
     # sess.save()
-    app.run(port=9999, host="0.0.0.0")
+    app.run(port=9999, host="127.0.0.1")
+
+
+@app.route('/kita')
+def index():
+    return render_template("index.html")
