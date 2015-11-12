@@ -10,7 +10,8 @@ __author__ = 'aleksandarvaricak'
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
+
 
 PLAYERS = 2
 
@@ -667,12 +668,14 @@ def get_previous_game(session_id=None):
     })), status=200, mimetype="application/json")
 
 
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+
 if __name__ == "__main__":
     # sess = GameSession(sid=111111)
     # sess.save()
     app.run(port=9999, host="127.0.0.1")
 
 
-@app.route('/kita')
-def index():
-    return render_template("index.html")

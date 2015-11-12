@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>black_jack</title>
+        <title>jebem_picke</title>
         <meta charset="utf-8">
-        <!--<link href="" rel="stylesheet">-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bj.css') }}">
     </head>
     <body>
+
         <article class="content">
+
             <p>kitadjoka</p>
+
         </article>
-        <!--<script src=""></script>-->
+
+        <script src="{{ url_for('static', filename='js/jQuery-1.11.3.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/views.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/apiCalls.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
+        <script>
+            $(document).ready(function () {
+                window.bot = {};
+            });
+        </script>
     </body>
 </html>
