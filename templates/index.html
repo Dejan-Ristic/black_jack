@@ -6,17 +6,17 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bj.css') }}">
     </head>
     <body>
-
         <article class="content">
-
-            <p>kitadjoka</p>
-
+            <label for="player-name">Player Name</label>
+            <input type="text" id="player-name">
+            <label for="session-id">Session ID</label>
+            <input type="text" id="session-id">
+            <button id="join-session-button">Join Session</button>
         </article>
-
         <script src="{{ url_for('static', filename='js/jQuery-1.11.3.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/views.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/apiCalls.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/model.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/view.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/control.js') }}"></script>
         <script>
             $(document).ready(function () {
                 window.bot = {};
