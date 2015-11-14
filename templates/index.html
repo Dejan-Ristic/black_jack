@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bj.css') }}">
     </head>
     <body>
+
         <article class="content">
             <label for="player-name">Player Name</label>
             <input type="text" id="player-name">
@@ -13,6 +14,16 @@
             <input type="text" id="session-id">
             <button id="join-session-button">Join Session</button>
         </article>
+
+        <div class="apis-testing">
+            <button id="get-session-state">Get Session State</button>
+            <button id="get-game-state">Get Game State</button>
+            <button id="check-turn">Check Turn</button>
+            <button id="hit">Hit</button>
+            <button id="hold">Hold</button>
+            <button id="get-previous-game">Get Previous Game</button>
+        </div>
+
         <script src="{{ url_for('static', filename='js/jQuery-1.11.3.js') }}"></script>
         <script src="{{ url_for('static', filename='js/model.js') }}"></script>
         <script src="{{ url_for('static', filename='js/view.js') }}"></script>
@@ -22,5 +33,6 @@
                 window.bot = {};
             });
         </script>
+
     </body>
 </html>

@@ -1,47 +1,34 @@
-ApiCalls = {
+
+var ApiCalls = {
 
     "joinSession":
-        function(sessId, plName){
+        function(sessId, plName, callback){
             $.get("join-session/"+sessId+"/"+plName, function (response) {
-                botInit(response, sessId, plName);
+                callback(response, sessId, plName);
             });
         },
 
     "getSessionState":
-        function(sessId){
+        function(sessId, callback){
             $.get("get-session-state/"+sessId, function (response) {
-                displayState(response);
+                callback(response);
             });
         },
 
-    "getGameState":
-        function(sessId){
-            $.get("get-game-state/"+sessId, function (response) {
-                displayState(response);
+    "hit":
+        function(sessId, plId, callback){
+            $.get("hit/"+sessId+"/"+plId, function (response) {
+                callback(response);
             });
+        },
 
+    "hold":
+        function(sessId, plId, callback){
+            $.get("hold/"+sessId+"/"+plId, function (response) {
+                callback(response);
+            });
         }
 };
-
-
-
-//***************************************************
-//@app.route('/join-session/<session_id>')
-//@app.route('/join-session/<session_id>/<name>')
-
-//@app.route('/get-session-state/<session_id>')
-
-//@app.route('/get-game-state/<session_id>')
-//***************************************************
-
-//@app.route('/check-turn/<session_id>/<player_id>')
-
-//@app.route('/hit/<session_id>/<player_id>')
-
-//@app.route('/hold/<session_id>/<player_id>')
-
-//@app.route('/get-previous-game/<session_id>')
-
 
 
 function BotStart(){
