@@ -1,4 +1,3 @@
-
 $("#join-session-button").on("click", function(){
     var sessId = $("#session-id").val();
     var plName = $("#player-name").val();
@@ -6,7 +5,7 @@ $("#join-session-button").on("click", function(){
         alert("fali session-id ili ime plejera");
     }
     else {
-        ApiCalls.joinSession(sessId, plName, botInit);
+        ApiCalls.joinSession(sessId, plName, initBot);
         //$(this).hide();
     }
 });

@@ -674,7 +674,7 @@ def index():
 
 
 if __name__ == "__main__":
-    sess = GameSession(sid=67)
+    sess = GameSession(sid=66)
     sess.save()
     app.run(port=9999, host="127.0.0.1")
 

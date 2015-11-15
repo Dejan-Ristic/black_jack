@@ -1,27 +1,23 @@
-
+// API CALLS **************************************************************************
 var ApiCalls = {
-
     "joinSession":
         function(sessId, plName, callback){
             $.get("join-session/"+sessId+"/"+plName, function (response) {
                 callback(response, sessId, plName);
             });
         },
-
     "getSessionState":
         function(sessId, callback){
             $.get("get-session-state/"+sessId, function (response) {
                 callback(response);
             });
         },
-
     "hit":
         function(sessId, plId, callback){
             $.get("hit/"+sessId+"/"+plId, function (response) {
                 callback(response);
             });
         },
-
     "hold":
         function(sessId, plId, callback){
             $.get("hold/"+sessId+"/"+plId, function (response) {
@@ -29,9 +25,12 @@ var ApiCalls = {
             });
         }
 };
+// ************************************************************************************
 
+// BOT ********************************************************************************
+var bot;
 
-function BotStart(){
+function Bot(){
 
     var sessionId;
     var playerId;
@@ -58,5 +57,15 @@ function BotStart(){
     this.getPlayerName = function(){
         return playerName;
     };
-}
 
+}
+// ************************************************************************************
+
+// BOT INITIALIZATION *****************************************************************
+function initBot(response, sessId, plName){
+    bot = new Bot();
+    bot.setSessionId(sessId);
+    bot.setPlayerId(response['player_id']);
+    bot.setPlayerName(plName);
+}
+// ************************************************************************************
