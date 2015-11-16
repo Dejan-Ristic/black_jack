@@ -10,9 +10,9 @@ $(document).ready(function(){
                 intervalWaitForStart = setInterval(function(){
                     console.log("bot created, waiting for all players");
                     ApiCalls.getSessionState(bot.getSessionId(), gameStart);
-                }, 500);
+                }, 400);
             }
-        }, 500);
+        }, 400);
     })();
 
     function gameStart(response){
@@ -26,7 +26,7 @@ $(document).ready(function(){
         intervalCheckPlayerTurn = setInterval(function () {
             console.log("waiting for my turn");
             ApiCalls.getSessionState(bot.getSessionId(), checkPlayerTurn);
-        }, 500);
+        }, 400);
     }
 
 
@@ -77,12 +77,14 @@ $(document).ready(function(){
     hit = function (response){
         console.log("***************** hit ********************");
         console.log(response);
+        clearInterval(intervalCheckPlayerTurn);
         checkPlayer();
     };
 
     hold = function (response){
         console.log("***************** hold ********************");
         console.log(response);
+        clearInterval(intervalCheckPlayerTurn);
         checkPlayer();
     };
 
