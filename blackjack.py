@@ -473,6 +473,7 @@ class GameSession:
             for player in self.players:
                 players.append(Player(player.name, pid=player.id, wins=player.wins))
             players = players[-1:] + players[0:-1]
+            self.players = players
             self.count += 1
             self.current_game = Game(Dealer(), self.deck, players, 0)
             new_deck = False

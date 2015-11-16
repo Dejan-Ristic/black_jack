@@ -7,7 +7,7 @@ $(document).ready(function() {
             alert("fali session-id ili ime plejera");
         }
         else {
-            ApiCalls.joinSession(sessId, plName, initBot);
+            ApiCalls.joinSession(sessId, plName, Bot.init);
             //$(this).hide();
         }
     });

@@ -1,37 +1,31 @@
 $(document).ready(function(){
 
-    //ApiCalls.joinSession(66, "dejan", initBot);
+    //ApiCalls.joinSession(66, "dejan", Bot.init);
 
-    (function(){
-        intervalCheckJoinSession = setInterval(function(){
-            console.log("checking session, if bot exists");
-            if(bot){
-                clearInterval(intervalCheckJoinSession);
-                intervalWaitForStart = setInterval(function(){
-                    console.log("bot created, waiting for all players");
-                    ApiCalls.getSessionState(bot.getSessionId(), gameStart);
-                }, 400);
-            }
-        }, 400);
-    })();
+    Bot.beforeStart();
 
-    function gameStart(response){
-        if(response["current_game"]) {
-            clearInterval(intervalWaitForStart);
-            checkPlayer();
-        }
-    }
-
-    function checkPlayer(){
+    checkPlayer = function(){
         intervalCheckPlayerTurn = setInterval(function () {
             console.log("waiting for my turn");
             ApiCalls.getSessionState(bot.getSessionId(), checkPlayerTurn);
         }, 400);
-    }
-
+    };
 
     function checkPlayerTurn(response){
         if(response["current_game"]["current_player"]["id"].toString() == bot.getPlayerId().toString()) {
+            if (response["games"].length+1 > bot.getGameNumber()){
+
+                console.log(bot.getGameNumber());
+
+
+                bot.setGameNumber(response["games"].length+1);
+
+                console.log(bot.getGameNumber());
+
+                console.log("****************************************");
+                console.log("*********** NEW GAME START *************");
+                console.log("****************************************");
+            }
 
             clearInterval(intervalCheckPlayerTurn);
 
@@ -41,7 +35,7 @@ $(document).ready(function(){
         }
     }
 
-
+});
 
 
 
@@ -88,4 +82,3 @@ $(document).ready(function(){
         checkPlayer();
     };
 
-});

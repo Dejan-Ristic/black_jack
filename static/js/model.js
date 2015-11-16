@@ -35,7 +35,7 @@ function Bot(){
     var sessionId;
     var playerId;
     var playerName;
-    var gameNumber = 0;
+    var gameNumber = 1;
 
     this.setSessionId = function(sessId){
         sessionId = sessId;
@@ -58,15 +58,48 @@ function Bot(){
     this.getPlayerName = function(){
         return playerName;
     };
+    this.setGameNumber = function(gameNo){
+        gameNumber = gameNo;
+        return gameNumber;
+    };
+    this.getGameNumber = function(){
+        return gameNumber;
+    };
+
+    this.waitAllPlayers = function(){
+        intervalWaitAllPlayers = setInterval(function(){
+            console.log("bot created, waiting for all players");
+            ApiCalls.getSessionState(sessionId, this.gameStart);
+        }, 400);
+    };
+
+    this.gameStart = function(response){
+        if(response["current_game"]) {
+            clearInterval(intervalWaitAllPlayers);
+            checkPlayer();
+        }
+    };
 
 }
 // ************************************************************************************
 
 // BOT INITIALIZATION *****************************************************************
-function initBot(response, sessId, plName){
+Bot.init = function(response, sessId, plName){
     bot = new Bot();
     bot.setSessionId(sessId);
     bot.setPlayerId(response['player_id']);
     bot.setPlayerName(plName);
-}
+};
+// ************************************************************************************
+
+// CHECK IF JOINED TO SESSION AND ALL THE PLAYERS ARE JOINED **************************
+Bot.beforeStart = function(){
+    intervalCheckJoinSession = setInterval(function(){
+        console.log("checking session, if bot exists");
+        if(bot){
+            clearInterval(intervalCheckJoinSession);
+            bot.waitAllPlayers();
+        }
+    }, 400);
+};
 // ************************************************************************************
