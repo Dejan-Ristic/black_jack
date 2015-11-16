@@ -12,7 +12,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.debug = False
 
-
 PLAYERS = 2
 
 
@@ -26,7 +25,7 @@ def json_rep(obj, exclude_fields=None, include_fields=None):
         sqlalchemy.orm.attributes.InstrumentedAttribute.
 
         Args:
-            obj: Object to be converted to JSON. That object should be instance of
+            object_to_convert: Object to be converted to JSON. That object should be instance of
                 some of our model class.
 
         Returns:
@@ -206,7 +205,7 @@ class Hand:
         adding card to deck and checking if value of deck is busted
         :param card:
         """
-        if not self.hold:
+        if not self.hold and not self.busted:
             self.cards.append(card)
             if self.get_value() > 21:
                 self.busted = True
@@ -457,12 +456,13 @@ class GameSession:
                 self.current_game.dealer.hand.add_card(self.current_game.deck.draw_card())
             winners = []
             for player in self.current_game.players:
-                if not winners and not player.hand.busted:
-                    winners.append(player)
-                if not player.hand.busted and player.hand.get_value() > winners[0].hand.get_value():
-                    winners = [player]
-                elif winners and player.hand.get_value() == winners[0].hand.get_value():
-                    winners.append(player)
+                if player not in winners:
+                    if not winners and not player.hand.busted:
+                        winners.append(player)
+                    if not player.hand.busted and player.hand.get_value() > winners[0].hand.get_value():
+                        winners = [player]
+                    elif winners and player.hand.get_value() == winners[0].hand.get_value():
+                        winners.append(player)
             for winner in winners:
                 for playa in self.players:
                     if winner.id == playa.id:
@@ -677,5 +677,3 @@ if __name__ == "__main__":
     sess = GameSession(sid=66)
     sess.save()
     app.run(port=9999, host="127.0.0.1")
-
-
