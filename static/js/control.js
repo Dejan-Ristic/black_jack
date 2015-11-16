@@ -4,79 +4,86 @@ $(document).ready(function(){
 
     (function(){
         intervalCheckJoinSession = setInterval(function(){
-            console.log("krenuo interval 1");
+            console.log("checking session, if bot exists");
             if(bot){
                 clearInterval(intervalCheckJoinSession);
-                ApiCalls.getSessionState(bot.getSessionId(), waitForStart);
+                intervalWaitForStart = setInterval(function(){
+                    console.log("bot created, waiting for all players");
+                    ApiCalls.getSessionState(bot.getSessionId(), gameStart);
+                }, 500);
             }
         }, 500);
     })();
 
-    function waitForStart(response){
-        if(!response["current_game"]) {
-            return;
-        }
-
-        //if(response["current_game"]) {
-        //    gameStart(response);
-        //}
-        //else {
-        //    console.log("nista jos");
-            intervalWaitForStart = setInterval(function(){
-            //    console.log("krenuo interval 2");
-                ApiCalls.getSessionState(bot.getSessionId(), waitForStart);
-            }, 500);
-        //}
-    }
-
     function gameStart(response){
-        //if(!response["current_game"]) {
-        //    return;
-        //}
-        clearInterval(intervalWaitForStart);
-        console.log("game starts");
-        console.log(response["current_game"]);
+        if(response["current_game"]) {
+            clearInterval(intervalWaitForStart);
+            checkPlayer();
+        }
+    }
+
+    function checkPlayer(){
+        intervalCheckPlayerTurn = setInterval(function () {
+            console.log("waiting for my turn");
+            ApiCalls.getSessionState(bot.getSessionId(), checkPlayerTurn);
+        }, 500);
+    }
+
+
+    function checkPlayerTurn(response){
+        if(response["current_game"]["current_player"]["id"].toString() == bot.getPlayerId().toString()) {
+
+            clearInterval(intervalCheckPlayerTurn);
+
+            console.log("my turn");
+            console.log(response);
+
+        }
     }
 
 
 
+
+
+
+
+
+
+
+
+
+    getSessionState = function (response){
+        console.log("***************** get-session-state ********************");
+        console.log(response);
+    };
+
+    getGameState = function (response){
+        console.log("***************** get-game-state ********************");
+        console.log(response["current_game"]);
+    };
+
+    getPreviousGame = function (response){
+        console.log("***************** get-previous-game ********************");
+        console.log(response["previous_game"]);
+    };
+
+    checkTurn = function (response){
+        console.log("***************** check-turn ********************");
+        console.log(response["current_game"]["current_player"]["id"]);
+    };
+
+
+
+    hit = function (response){
+        console.log("***************** hit ********************");
+        console.log(response);
+        checkPlayer();
+    };
+
+    hold = function (response){
+        console.log("***************** hold ********************");
+        console.log(response);
+        checkPlayer();
+    };
 
 });
-
-
-
-
-
-
-
-
-function getSessionState(response){
-    console.log("***************** get-session-state ********************");
-    console.log(response)
-}
-
-function getGameState(response){
-    console.log("***************** get-game-state ********************");
-    console.log(response["current_game"]);
-}
-
-function getPreviousGame(response){
-    console.log("***************** get-previous-game ********************");
-    console.log(response["previous_game"]);
-}
-
-function checkTurn(response){
-    console.log("***************** check-turn ********************");
-    console.log(response["current_game"]["current_player"]["id"]);
-}
-
-function hit(response){
-    console.log("***************** hit ********************");
-    console.log(response);
-}
-
-function hold(response){
-    console.log("***************** hold ********************");
-    console.log(response);
-}
-

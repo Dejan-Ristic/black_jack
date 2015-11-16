@@ -1,35 +1,39 @@
-$("#join-session-button").on("click", function(){
-    var sessId = $("#session-id").val();
-    var plName = $("#player-name").val();
-    if (!sessId || !plName){
-        alert("fali session-id ili ime plejera");
-    }
-    else {
-        ApiCalls.joinSession(sessId, plName, initBot);
-        //$(this).hide();
-    }
-});
+$(document).ready(function() {
 
-$("#get-session-state").on("click", function(){
-    ApiCalls.getSessionState(bot.getSessionId(), getSessionState);
-});
+    $("#join-session-button").on("click", function () {
+        var sessId = $("#session-id").val();
+        var plName = $("#player-name").val();
+        if (!sessId || !plName) {
+            alert("fali session-id ili ime plejera");
+        }
+        else {
+            ApiCalls.joinSession(sessId, plName, initBot);
+            //$(this).hide();
+        }
+    });
 
-$("#get-game-state").on("click", function(){
-    ApiCalls.getSessionState(bot.getSessionId(), getGameState);
-});
+    $("#get-session-state").on("click", function () {
+        ApiCalls.getSessionState(bot.getSessionId(), getSessionState);
+    });
 
-$("#check-turn").on("click", function(){
-    ApiCalls.getSessionState(bot.getSessionId(), checkTurn);
-});
+    $("#get-game-state").on("click", function () {
+        ApiCalls.getSessionState(bot.getSessionId(), getGameState);
+    });
 
-$("#hit").on("click", function(){
-    ApiCalls.hit(bot.getSessionId(), bot.getPlayerId(), hit);
-});
+    $("#check-turn").on("click", function () {
+        ApiCalls.getSessionState(bot.getSessionId(), checkTurn);
+    });
 
-$("#hold").on("click", function(){
-    ApiCalls.hold(bot.getSessionId(), bot.getPlayerId(), hold);
-});
+    $("#hit").on("click", function () {
+        ApiCalls.hit(bot.getSessionId(), bot.getPlayerId(), hit);
+    });
 
-$("#get-previous-game").on("click", function(){
-    ApiCalls.getSessionState(bot.getSessionId(), getPreviousGame);
+    $("#hold").on("click", function () {
+        ApiCalls.hold(bot.getSessionId(), bot.getPlayerId(), hold);
+    });
+
+    $("#get-previous-game").on("click", function () {
+        ApiCalls.getSessionState(bot.getSessionId(), getPreviousGame);
+    });
+
 });

@@ -35,6 +35,7 @@ function Bot(){
     var sessionId;
     var playerId;
     var playerName;
+    var gameNumber = 0;
 
     this.setSessionId = function(sessId){
         sessionId = sessId;
