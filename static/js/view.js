@@ -7,33 +7,17 @@ $(document).ready(function() {
             alert("fali session-id ili ime plejera");
         }
         else {
-            ApiCalls.joinSession(sessId, plName, Bot.init);
+            Bot.joinSession(sessId, plName, Bot.init);
             //$(this).hide();
         }
     });
 
-    $("#get-session-state").on("click", function () {
-        ApiCalls.getSessionState(bot.getSessionId(), getSessionState);
-    });
-
-    $("#get-game-state").on("click", function () {
-        ApiCalls.getSessionState(bot.getSessionId(), getGameState);
-    });
-
-    $("#check-turn").on("click", function () {
-        ApiCalls.getSessionState(bot.getSessionId(), checkTurn);
-    });
-
     $("#hit").on("click", function () {
-        ApiCalls.hit(bot.getSessionId(), bot.getPlayerId(), hit);
+        bot.makeHit();
     });
 
     $("#hold").on("click", function () {
-        ApiCalls.hold(bot.getSessionId(), bot.getPlayerId(), hold);
-    });
-
-    $("#get-previous-game").on("click", function () {
-        ApiCalls.getSessionState(bot.getSessionId(), getPreviousGame);
+        bot.makeHold();
     });
 
 });
