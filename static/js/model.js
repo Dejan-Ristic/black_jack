@@ -1,7 +1,11 @@
 // BOT ********************************************************************************
 var bot;
 
-function Bot(sessId, plId, plName){
+function Bot(sessId, plId){
+
+    var sessionId = sessId;
+    var playerId = plId;
+    var gameNumber = 0;
 
     var ApiCalls = {
         "getSessionState":
@@ -23,11 +27,6 @@ function Bot(sessId, plId, plName){
                 });
             }
     };
-
-    var sessionId = sessId;
-    var playerId = plId;
-    var playerName = plName;
-    var gameNumber = 0;
 
     var intervalWaitAllPlayers;
     var intervalCheckPlayerTurn;
@@ -67,30 +66,13 @@ function Bot(sessId, plId, plName){
 
             clearInterval(intervalCheckPlayerTurn);
 
-            var dealerCards = response["current_game"]["dealer"]["hand"]["cards"];
-            var players = response["current_game"]["players"];
-
-            console.log("dealer cards");
-            for(i= 0; i<dealerCards.length; i++) {
-                console.log(dealerCards[i]["color"]);
-                console.log(dealerCards[i]["number"]);
-            }
-
-            for(i= 0; i<players.length; i++) {
-                console.log("player"+(i+1)+" cards");
-                for(j=0; j<players[i]["hand"]["cards"].length; j++){
-                    console.log(players[i]["hand"]["cards"][j]["color"]);
-                    console.log(players[i]["hand"]["cards"][j]["number"]);
-                }
-
-            }
+            displayCards(response);
 
             console.log("my turn");
             console.log(response);
 
         }
     }
-
 
 
     this.makeHit = function(){
@@ -105,7 +87,7 @@ function Bot(sessId, plId, plName){
 // ************************************************************************************
 
 
-// CHECK IF JOINED TO SESSION AND ALL THE PLAYERS ARE JOINED **************************
+// CHECK IF JOINED TO SESSION *********************************************************
 Bot.beforeStart = function(){
     var intervalCheckJoinSession = setInterval(function(){
         console.log("checking session, if bot exists");
@@ -120,7 +102,7 @@ Bot.beforeStart = function(){
 // JOINING SESSION AND BOT INITIALIZATION *********************************************
 Bot.joinSession = function(sessId, plName){
     $.get("join-session/"+sessId+"/"+plName, function (response) {
-        bot = new Bot(sessId, response['player_id'], plName);
+        bot = new Bot(sessId, response['player_id']);
     });
 };
 // ************************************************************************************

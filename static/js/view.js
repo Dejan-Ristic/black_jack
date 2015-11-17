@@ -1,7 +1,5 @@
 $(document).ready(function() {
 
-    var $gamesContainer = $(".games-container");
-
     $("#join-session-button").on("click", function () {
         var sessId = $("#session-id").val();
         var plName = $("#player-name").val();
@@ -22,10 +20,28 @@ $(document).ready(function() {
         bot.makeHold();
     });
 
-    addGame = function(){
-        var $game = "<div class='game'></div>";
-        $gamesContainer.append($game);
+    displayCards = function(response){
 
+        var $gamesContainer = $(".games-container");
+        var dealerCards = response["current_game"]["dealer"]["hand"]["cards"];
+        var players = response["current_game"]["players"];
+
+
+        console.log("dealer cards");
+
+        for(i= 0; i<dealerCards.length; i++) {
+            console.log(dealerCards[i]["color"]);
+            console.log(dealerCards[i]["number"]);
+        }
+
+        for(i= 0; i<players.length; i++) {
+            console.log("player"+(i+1)+" cards");
+            for(j=0; j<players[i]["hand"]["cards"].length; j++){
+                console.log(players[i]["hand"]["cards"][j]["color"]);
+                console.log(players[i]["hand"]["cards"][j]["number"]);
+            }
+
+        }
     }
 
 });
