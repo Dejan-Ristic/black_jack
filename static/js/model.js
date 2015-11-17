@@ -27,17 +27,17 @@ function Bot(sessId, plId, plName){
     var sessionId = sessId;
     var playerId = plId;
     var playerName = plName;
-    var gameNumber = 1;
+    var gameNumber = 0;
 
     var intervalWaitAllPlayers;
     var intervalCheckPlayerTurn;
 
-    this.waitAllPlayers = function(){
+    (function waitAllPlayers(){
         intervalWaitAllPlayers = setInterval(function(){
             console.log("bot created, waiting for all players");
             ApiCalls.getSessionState(sessionId, gameStart);
         }, 400);
-    };
+    })();
 
     function gameStart(response){
         if(response["current_game"]) {
@@ -47,30 +47,43 @@ function Bot(sessId, plId, plName){
     }
 
     function checkPlayer(){
+        clearInterval(intervalCheckPlayerTurn);
         intervalCheckPlayerTurn = setInterval(function () {
             console.log("waiting for my turn");
             ApiCalls.getSessionState(sessionId, checkPlayerTurn);
         }, 400);
     }
 
-
     function checkPlayerTurn(response){
         if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()) {
             if (response["games"].length+1 > gameNumber){
 
-                console.log(gameNumber);
-
-
                 gameNumber = response["games"].length+1;
 
-                console.log(gameNumber);
-
-                console.log("****************************************");
                 console.log("*********** NEW GAME START *************");
                 console.log("****************************************");
+
             }
 
             clearInterval(intervalCheckPlayerTurn);
+
+            var dealerCards = response["current_game"]["dealer"]["hand"]["cards"];
+            var players = response["current_game"]["players"];
+
+            console.log("dealer cards");
+            for(i= 0; i<dealerCards.length; i++) {
+                console.log(dealerCards[i]["color"]);
+                console.log(dealerCards[i]["number"]);
+            }
+
+            for(i= 0; i<players.length; i++) {
+                console.log("player"+(i+1)+" cards");
+                for(j=0; j<players[i]["hand"]["cards"].length; j++){
+                    console.log(players[i]["hand"]["cards"][j]["color"]);
+                    console.log(players[i]["hand"]["cards"][j]["number"]);
+                }
+
+            }
 
             console.log("my turn");
             console.log(response);
@@ -78,53 +91,36 @@ function Bot(sessId, plId, plName){
         }
     }
 
+
+
     this.makeHit = function(){
-        ApiCalls.hit(sessionId, playerId, hit);
+        ApiCalls.hit(sessionId, playerId, checkPlayer);
     };
 
     this.makeHold = function(){
-        ApiCalls.hold(sessionId, playerId, hold);
+        ApiCalls.hold(sessionId, playerId, checkPlayer);
     };
-
-    function hit(response){
-        console.log("***************** hit ********************");
-        console.log(response);
-        clearInterval(intervalCheckPlayerTurn);
-        checkPlayer();
-    }
-
-    function hold(response){
-        console.log("***************** hold ********************");
-        console.log(response);
-        clearInterval(intervalCheckPlayerTurn);
-        checkPlayer();
-    }
 
 }
 // ************************************************************************************
 
-// BOT INITIALIZATION *****************************************************************
-Bot.init = function(response, sessId, plName){
-    bot = new Bot(sessId, response['player_id'], plName);
-};
-// ************************************************************************************
 
 // CHECK IF JOINED TO SESSION AND ALL THE PLAYERS ARE JOINED **************************
 Bot.beforeStart = function(){
-    intervalCheckJoinSession = setInterval(function(){
+    var intervalCheckJoinSession = setInterval(function(){
         console.log("checking session, if bot exists");
         if(bot){
             clearInterval(intervalCheckJoinSession);
-            bot.waitAllPlayers();
         }
     }, 400);
 };
 // ************************************************************************************
 
-// JOINING SESSION ********************************************************************
-Bot.joinSession = function(sessId, plName, callback){
+
+// JOINING SESSION AND BOT INITIALIZATION *********************************************
+Bot.joinSession = function(sessId, plName){
     $.get("join-session/"+sessId+"/"+plName, function (response) {
-        callback(response, sessId, plName);
+        bot = new Bot(sessId, response['player_id'], plName);
     });
 };
 // ************************************************************************************

@@ -3,5 +3,11 @@ body {
 }
 
 .apis-testing {
-    margin: 20px 0 0;
+    margin: 20px 0;
+}
+
+.game {
+    height: 100px;
+    margin-bottom: 10px;
+    border: 1px solid black;
 }
