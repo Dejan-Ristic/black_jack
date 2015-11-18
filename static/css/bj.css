@@ -1,13 +1,22 @@
 body {
-    background-color: lightgray;
-}
+    background-color: lightgray;}
 
 .apis-testing {
-    margin: 20px 0;
-}
+    margin: 20px 0;}
 
-.game {
-    height: 100px;
-    margin-bottom: 10px;
-    border: 1px solid black;
-}
+.res-container {
+    margin-bottom: 10px;}
+
+    .res-container .results {
+        display: inline-block;
+        border: 1px solid black;
+        padding: 5px;
+        margin-right: 10px;}
+
+        .res-container .results .name {
+            text-align: center;
+            display: block;}
+
+        .res-container .results .cards {
+            text-align: center;
+            display: inline-block;}

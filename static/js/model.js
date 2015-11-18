@@ -74,7 +74,7 @@ function Bot(sessId, plId){
         }
     }
 
-
+    // =================== REMOVE LATER ============================
     this.makeHit = function(){
         ApiCalls.hit(sessionId, playerId, checkPlayer);
     };
@@ -82,6 +82,7 @@ function Bot(sessId, plId){
     this.makeHold = function(){
         ApiCalls.hold(sessionId, playerId, checkPlayer);
     };
+    // =============================================================
 
 }
 // ************************************************************************************
