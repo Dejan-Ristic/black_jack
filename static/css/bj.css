@@ -4,19 +4,17 @@ body {
 .apis-testing {
     margin: 20px 0;}
 
-.res-container {
-    margin-bottom: 10px;}
-
-    .res-container .results {
+    .games-container .res-container .results {
         display: inline-block;
         border: 1px solid black;
         padding: 5px;
-        margin-right: 10px;}
+        margin-right: 10px;
+        margin-bottom: 10px;}
 
-        .res-container .results .name {
+        .games-container .res-container .results .name {
             text-align: center;
             display: block;}
 
-        .res-container .results .cards {
+        .games-container .res-container .results .cards {
             text-align: center;
             display: inline-block;}

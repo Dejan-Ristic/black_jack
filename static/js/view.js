@@ -25,56 +25,32 @@ $(document).ready(function() {
     displayCards = function(response){
 
         var $gamesContainer = $(".games-container");
-
-
-        var dealerCards = response["current_game"]["dealer"]["hand"]["cards"];
+        var allResults = "";
+        var dealer = response["current_game"]["dealer"];
         var players = response["current_game"]["players"];
-
-
-
 
         var gameDealer = "";
         gameDealer += ('<div class="res-container"><div class="results"><div class="name">'+response["current_game"]["dealer"]["name"]+'</div>');
-
-        for(i= 0; i<dealerCards.length; i++) {
-            gameDealer += ('<div class="cards">'+dealerCards[i]["color"]+'</div>');
-            gameDealer += ('<div class="cards">'+dealerCards[i]["number"]+'</div>');
-            gameDealer += (i == dealerCards.length-1) ? "</div>" : "";
+        for(i= 0; i<dealer["hand"]["cards"].length; i++) {
+            gameDealer += ('<div class="cards">'+dealer["hand"]["cards"][i]["color"]+'</div>');
+            gameDealer += ('<div class="cards">'+dealer["hand"]["cards"][i]["number"]+'</div>');
+            gameDealer += (i == dealer["hand"]["cards"].length-1) ? "</div>" : "";
         }
-
-        $gamesContainer.append(gameDealer);
-
-
-
+        allResults += gameDealer;
 
         var gamePlayer = "";
-
         for(i= 0; i<players.length; i++) {
-
-
             gamePlayer += ('<div class="results"><div class="name">'+players[i]["name"]+'</div>');
-
             for(j=0; j<players[i]["hand"]["cards"].length; j++){
                 gamePlayer += ('<div class="cards">'+players[i]["hand"]["cards"][j]["color"]+'</div>');
                 gamePlayer += ('<div class="cards">'+players[i]["hand"]["cards"][j]["number"]+'</div>');
-
-                if(j == players[i]["hand"]["cards"].length-1) {
-                    gamePlayer += "</div>";
-                }
-
+                gamePlayer += (j == players[i]["hand"]["cards"].length-1) ? "</div>" : "";
             }
-
-            if(i == players.length-1) {
-                gamePlayer += "</div>";
-            }
-
-            $gamesContainer.append(gamePlayer);
-            gamePlayer = "";
-
+            gamePlayer += (i == players.length-1) ? "</div>" : "";
         }
-        console.log(gameDealer);
-        console.log(gamePlayer);
+        allResults += gamePlayer;
 
+        $gamesContainer.append(allResults);
     }
 
 });
