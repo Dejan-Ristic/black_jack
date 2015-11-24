@@ -7,17 +7,27 @@
     </head>
     <body>
 
-        <article class="content">
-            <label for="player-name">Player Name</label>
-            <input type="text" id="player-name">
-            <label for="session-id">Session ID</label>
-            <input type="text" id="session-id">
-            <button id="join-session-button">Join Session</button>
-        </article>
+        {% for pl in range(0, players) %}
+            <div class="player-inputs">
+                <label for="player-name">Player Name</label>
+                <input type="text" id="player-name">
+                <input type="hidden" id="session-id" value="{{ sessId }}">
+                <button id="join-session-button">Join Session</button>
+            </div>
+        {% endfor %}
 
         <div class="apis-testing">
             <button id="hit">Hit</button>
             <button id="hold">Hold</button>
+        </div>
+
+        <div class="scores">
+            <div class="games-count">
+                <div>Total played</div>
+                <div class="total-played"></div>
+            </div>
+            <div class="games-players">
+            </div>
         </div>
 
         <div class="games-container">

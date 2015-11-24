@@ -30,7 +30,7 @@ $(document).ready(function() {
         var players = response["current_game"]["players"];
 
         var gameDealer = "";
-        gameDealer += ('<div class="res-container"><div class="results"><div class="name">'+response["current_game"]["dealer"]["name"]+'</div>');
+        gameDealer += ('<div class="res-container"><div class="results"><div class="name">'+dealer["name"]+'</div>');
         for(i= 0; i<dealer["hand"]["cards"].length; i++) {
             gameDealer += ('<div class="cards">'+dealer["hand"]["cards"][i]["color"]+'</div>');
             gameDealer += ('<div class="cards">'+dealer["hand"]["cards"][i]["number"]+'</div>');
@@ -51,6 +51,23 @@ $(document).ready(function() {
         allResults += gamePlayer;
 
         $gamesContainer.append(allResults);
+
+        var $scores = $(".scores");
+        var $scoresPlayers = $scores.find(".games-players");
+
+        $scoresPlayers.empty();
+        $scores.find(".games-count").find(".total-played").text(response["games"].length);
+
+        var houseWins = "";
+        houseWins += '<div class="games-count"><div>'+dealer["name"]+'</div><div>'+response["house_wins"]+'</div></div>';
+        $scoresPlayers.append(houseWins);
+
+        for(i= 0; i<players.length; i++) {
+            var playerWins = "";
+            playerWins += '<div class="games-count"><div>'+players[i]["name"]+'</div><div>'+players[i]["wins"]+'</div></div>';
+            $scoresPlayers.append(playerWins);
+        }
+
     }
 
 });

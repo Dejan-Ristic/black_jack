@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.debug = False
 
 PLAYERS = 2
+SID = 66
 
 
 def json_rep(obj, exclude_fields=None, include_fields=None):
@@ -463,10 +464,12 @@ class GameSession:
                         winners = [player]
                     elif winners and player.hand.get_value() == winners[0].hand.get_value():
                         winners.append(player)
+            awarded_wins = []
             for winner in winners:
                 for playa in self.players:
-                    if winner.id == playa.id:
+                    if winner.id == playa.id and playa.id not in awarded_wins:
                         playa.wins += 1
+                        awarded_wins.append(playa.id)
             self.games.append(self.current_game)
             self.previous_game = self.current_game
             players = []
@@ -649,8 +652,8 @@ def get_session_state(session_id=None):
     if type(game_session) == Response:
         return game_session
     return Response(response=json.dumps(json_rep(game_session, exclude_fields={
-        GameSession: ["deck"],
-        Game: ["deck"]
+        GameSession: ["deck", "count"],
+        Game: ["deck", "count"]
     })), status=200, mimetype="application/json")
 
 
@@ -665,16 +668,16 @@ def get_previous_game(session_id=None):
     if type(game_session) == Response:
         return game_session
     return Response(response=json.dumps(json_rep(game_session.previous_game, exclude_fields={
-        Game: ["deck"]
+        Game: ["deck", "count"]
     })), status=200, mimetype="application/json")
 
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", players=PLAYERS, sessId=SID)
 
 
 if __name__ == "__main__":
-    sess = GameSession(sid=66)
+    sess = GameSession(sid=SID)
     sess.save()
     app.run(port=9999, host="127.0.0.1")
