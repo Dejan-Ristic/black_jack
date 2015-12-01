@@ -31,6 +31,10 @@ function Bot(sessId, plId){
     var intervalWaitAllPlayers;
     var intervalCheckPlayerTurn;
 
+    this.getGameNumber = function(){
+        return gameNumber;
+    };
+
     (function waitAllPlayers(){
         intervalWaitAllPlayers = setInterval(function(){
             console.log("bot created, waiting for all players");
@@ -54,7 +58,11 @@ function Bot(sessId, plId){
     }
 
     function checkPlayerTurn(response){
+
         if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()) {
+
+            displayCards(response);
+
             if (response["games"].length+1 > gameNumber){
 
                 gameNumber = response["games"].length+1;

@@ -50,7 +50,14 @@ $(document).ready(function() {
         }
         allResults += gamePlayer;
 
+        if (response["games"].length != bot.getGameNumber()){
+            $gamesContainer.find(".res-container").last().remove();
+        }
         $gamesContainer.append(allResults);
+
+
+
+
 
         var $scores = $(".scores");
         var $scoresPlayers = $scores.find(".games-players");

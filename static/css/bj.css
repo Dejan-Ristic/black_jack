@@ -9,7 +9,7 @@ body {
 
 .scores {
     padding: 5px;
-    border: 1px solid darkolivegreen;
+    border: 1px solid blue;
     margin-bottom: 10px;}
 
     .scores .games-count, .scores .games-players {

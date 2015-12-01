@@ -13,7 +13,6 @@ app = Flask(__name__)
 app.debug = False
 
 PLAYERS = 2
-SID = 66
 
 
 def json_rep(obj, exclude_fields=None, include_fields=None):
@@ -674,10 +673,10 @@ def get_previous_game(session_id=None):
 
 @app.route('/')
 def index():
-    return render_template("index.html", players=PLAYERS, sessId=SID)
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
-    sess = GameSession(sid=SID)
+    sess = GameSession(sid=66)
     sess.save()
     app.run(port=9999, host="127.0.0.1")
