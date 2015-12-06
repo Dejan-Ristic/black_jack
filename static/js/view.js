@@ -32,8 +32,8 @@ $(document).ready(function() {
             var gameDealer = "";
             gameDealer += ('<div class="res-container"><div class="results"><div class="name">'+dealer["name"]+'</div>');
             for(i= 0; i<dealer["hand"]["cards"].length; i++) {
-                gameDealer += ('<div class="cards">'+dealer["hand"]["cards"][i]["color"]+'</div>');
-                gameDealer += ('<div class="cards">'+dealer["hand"]["cards"][i]["number"]+'</div>');
+                gameDealer += ('<div class="cards"><span>|</span>'+dealer["hand"]["cards"][i]["color"]+'</div>');
+                gameDealer += ('<div class="cards">'+dealer["hand"]["cards"][i]["number"]+'<span>|</span></div>');
                 gameDealer += (i == dealer["hand"]["cards"].length-1) ? "</div>" : "";
             }
             allResults += gameDealer;
