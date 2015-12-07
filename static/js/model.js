@@ -126,16 +126,31 @@ function Bot(sessId, plId){
         }
 
         function getMyCards(players){
-            for (i = 0; i < players.length; i++){
-                if (players[i]["id"].toString() == playerId.toString()){
-                    return players[i]["hand"]["cards"];
+            $.each(players, function(index, player){
+                if (player["id"].toString() == playerId.toString()){
+                    return player["hand"]["cards"];
                 }
-            }
+            });
+            //for (i = 0; i < players.length; i++){
+            //    if (players[i]["id"].toString() == playerId.toString()){
+            //        return players[i]["hand"]["cards"];
+            //    }
+            //}
         }
 
         function getMyCardsSum(cards){
             var sum = [0];
-            var sumTemp = [];
+            var sumTemp = [0];
+
+            function checkIfInArray(valueToCheck, array){
+                var check = false;
+                $.each(array, function(key, value){
+                    if (value == valueToCheck){
+                        return check = true;
+                    }
+                });
+                return check;
+            }
 
             for (i = 0; i < cards.length; i++){
 
@@ -151,7 +166,9 @@ function Bot(sessId, plId){
                     }
                     sum = [];
                     for (j=0; j<sumTemp.length; j++){
-                        sum[j] = sumTemp[j];
+                        if(!checkIfInArray(sumTemp[j], sum)){
+                            sum.push(sumTemp[j]);
+                        }
                     }
                 }
                 else {
@@ -169,6 +186,7 @@ function Bot(sessId, plId){
             {"color": "K", "number": 3},
             {"color": "K", "number": 1},
             {"color": "K", "number": 5},
+            {"color": "K", "number": 1},
             {"color": "K", "number": 1},
             {"color": "K", "number": 1}
         ];

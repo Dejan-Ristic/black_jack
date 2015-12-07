@@ -504,9 +504,18 @@ class GameSession:
                 self.current_game.players[cpi % len(self.current_game.players)] = self.current_game.current_player
                 break
             cpi += 1
-        cpi += 1
-        cpi %= len(self.current_game.players)
-        self.current_game.current_player = self.current_game.players[cpi]
+        found = False
+        all_hold_or_busted = 0
+        while not found:
+            cpi += 1
+            cpi %= len(self.current_game.players)
+            self.current_game.current_player = self.current_game.players[cpi]
+            if not self.current_game.current_player.hand.hold and not self.current_game.current_player.hand.busted:
+                found = True
+            else:
+                all_hold_or_busted += 1
+            if all_hold_or_busted == len(self.current_game.players):
+                break
 
 
 # HELPER METHODS
