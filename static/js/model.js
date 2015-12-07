@@ -35,8 +35,10 @@ function Bot(sessId, plId){
         return gameNumber;
     };
 
-
-    var deckStart = {"1": 28, "2": 28, "3": 28, "4": 28, "5": 28, "6": 28, "7": 28, "8": 28, "9": 28, "10": 28, "12": 28, "13": 28, "14": 28};
+    var deckStart = {
+        "1": 28, "2": 28, "3": 28, "4": 28, "5": 28, "6": 28, "7": 28,
+        "8": 28, "9": 28, "10": 28, "12": 28, "13": 28, "14": 28
+    };
 
 
     (function waitAllPlayers(){
@@ -123,19 +125,71 @@ function Bot(sessId, plId){
             return cardsNumber;
         }
 
-        function countCardsGood(player){
-            
+        function getMyCards(players){
+            for (i = 0; i < players.length; i++){
+                if (players[i]["id"].toString() == playerId.toString()){
+                    return players[i]["hand"]["cards"];
+                }
+            }
         }
+
+        function getMyCardsSum(cards){
+            var sum = [0];
+            var sumTemp = [];
+
+            for (i = 0; i < cards.length; i++){
+
+                if (cards[i]["number"] == 12 || cards[i]["number"] == 13 || cards[i]["number"] == 14){
+                    for (j=0; j<sum.length; j++){
+                        sum[j] += 10;
+                    }
+                }
+                else if(cards[i]["number"] == 1){
+                    for (j=0; j<sum.length; j++){
+                        sumTemp[j] = parseInt(sum[j])+1;
+                        sumTemp[sum.length+j] = parseInt(sum[j])+11;
+                    }
+                    sum = [];
+                    for (j=0; j<sumTemp.length; j++){
+                        sum[j] = sumTemp[j];
+                    }
+                }
+                else {
+                    for (j=0; j<sum.length; j++){
+                        sum[j] += parseInt(cards[i]["number"]);
+                    }
+                }
+
+
+            }
+            return sum;
+        }
+
+        var testingCards = [
+            {"color": "K", "number": 3},
+            {"color": "K", "number": 1},
+            {"color": "K", "number": 5},
+            {"color": "K", "number": 1},
+            {"color": "K", "number": 1}
+        ];
+
 
         var dealer = response["current_game"]["dealer"];
         var players = response["current_game"]["players"];
+        var myCards = getMyCards(players);
+        var testingCardsa = getMyCardsSum(testingCards);
+
+        console.log(testingCardsa);
+        //var myCardsSum = getMyCardsSum(myCards);
 
         var deckCurrent = getCurrentDeck(dealer, players);
 
         var cardsLeftTotal = countCardsLeft(deckCurrent);
-        var cardsLeftGood = countCardsGood(player);
 
-
+        console.log("total cards left");
+        console.log(cardsLeftTotal);
+        //console.log("these are my cards");
+        //console.log(myCardsSum);
 
     }
 
