@@ -41,7 +41,7 @@ function Bot(sessId, plId){
     };
 
 
-    (function waitAllPlayers(){
+    (function(){
         intervalWaitAllPlayers = setInterval(function(){
             console.log("bot created, waiting for all players");
             ApiCalls.getSessionState(sessionId, gameStart);
@@ -67,7 +67,7 @@ function Bot(sessId, plId){
 
         if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()) {
 
-            displayCards(response);
+            displayGamesAndResults(response);
 
             if (response["games"].length+1 > gameNumber){
 
@@ -80,7 +80,7 @@ function Bot(sessId, plId){
 
             clearInterval(intervalCheckPlayerTurn);
 
-            displayCards(response);
+            displayGamesAndResults(response);
 
             console.log("my turn");
             console.log(response);
@@ -95,62 +95,58 @@ function Bot(sessId, plId){
     function considerMove(response){
 
         function getCurrentDeck(dealer, players) {
-            var deckCurrentLocal = {};
-            for (var card in deckStart) {
-                if (deckStart.hasOwnProperty(card)) {
-                    deckCurrentLocal[card] = deckStart[card];
-                }
-            }
-            for (i = 0; i < dealer["hand"]["cards"].length; i++) {
-                var cardDealer = dealer["hand"]["cards"][i]["number"];
-                deckCurrentLocal[cardDealer] -= 1;
-
-            }
-            for (i = 0; i < players.length; i++){
-                for(j=0; j<players[i]["hand"]["cards"].length; j++){
-                    var cardPlayer = players[i]["hand"]["cards"][j]["number"];
-                    deckCurrentLocal[cardPlayer] -= 1;
-                }
-            }
-            return deckCurrentLocal;
+            var deck = {};
+            $.each(deckStart, function(card, count){
+                deck[card] = count;
+            });
+            $.each(dealer["hand"]["cards"], function(index, card){
+                var cardDealer = card["number"];
+                deck[cardDealer] -= 1;
+            });
+            $.each(players, function(index, player){
+                $.each(player["hand"]["cards"], function(index, card){
+                    var cardPlayer = card["number"];
+                    deck[cardPlayer] -= 1;
+                });
+            });
+            return deck;
         }
 
         function countCardsLeft(deck){
             var cardsNumber = 0;
-            for (var card in deck) {
-                if (deck.hasOwnProperty(card)) {
-                    cardsNumber += deck[card];
-                }
-            }
+            $.each(deck, function(card, count){
+                cardsNumber += count;
+            });
             return cardsNumber;
         }
 
         function getMyCards(players){
+            var cards = [];
             $.each(players, function(index, player){
                 if (player["id"].toString() == playerId.toString()){
-                    return player["hand"]["cards"];
+                    $.each(player["hand"]["cards"], function(index, card){
+                        cards.push(card);
+                    });
+                    return false;
                 }
             });
-            //for (i = 0; i < players.length; i++){
-            //    if (players[i]["id"].toString() == playerId.toString()){
-            //        return players[i]["hand"]["cards"];
-            //    }
-            //}
+            return cards;
         }
 
         function getMyCardsSum(cards){
-            var sum = [0];
-            var sumTemp = [0];
 
             function checkIfInArray(valueToCheck, array){
                 var check = false;
-                $.each(array, function(key, value){
+                $.each(array, function(index, value){
                     if (value == valueToCheck){
                         return check = true;
                     }
                 });
                 return check;
             }
+
+            var sum = [0];
+            var sumTemp = [0];
 
             for (i = 0; i < cards.length; i++){
 
@@ -166,7 +162,7 @@ function Bot(sessId, plId){
                     }
                     sum = [];
                     for (j=0; j<sumTemp.length; j++){
-                        if(!checkIfInArray(sumTemp[j], sum)){
+                        if(!checkIfInArray(sumTemp[j], sum) && sumTemp[j] <= 21){
                             sum.push(sumTemp[j]);
                         }
                     }
@@ -182,23 +178,27 @@ function Bot(sessId, plId){
             return sum;
         }
 
-        var testingCards = [
-            {"color": "K", "number": 3},
-            {"color": "K", "number": 1},
-            {"color": "K", "number": 5},
-            {"color": "K", "number": 1},
-            {"color": "K", "number": 1},
-            {"color": "K", "number": 1}
-        ];
+
+        //
+        //
+        //var testingCards = [
+        //    {"color": "K", "number": 3},
+        //    {"color": "K", "number": 1},
+        //    {"color": "K", "number": 5},
+        //    {"color": "K", "number": 1},
+        //    {"color": "K", "number": 1},
+        //    {"color": "K", "number": 1}
+        //];
 
 
         var dealer = response["current_game"]["dealer"];
         var players = response["current_game"]["players"];
-        var myCards = getMyCards(players);
-        var testingCardsa = getMyCardsSum(testingCards);
 
-        console.log(testingCardsa);
-        //var myCardsSum = getMyCardsSum(myCards);
+        var myCards = getMyCards(players);
+        var myCardsSum = getMyCardsSum(myCards);
+
+        //var testingCardsa = getMyCardsSum(testingCards);
+        //console.log(testingCardsa);
 
         var deckCurrent = getCurrentDeck(dealer, players);
 
@@ -206,8 +206,10 @@ function Bot(sessId, plId){
 
         console.log("total cards left");
         console.log(cardsLeftTotal);
-        //console.log("these are my cards");
-        //console.log(myCardsSum);
+        console.log("these are my cards");
+        console.log(myCards);
+        console.log("these are my sums");
+        console.log(myCardsSum)
 
     }
 
