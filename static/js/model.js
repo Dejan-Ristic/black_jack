@@ -133,6 +133,10 @@ function Bot(sessId, plId){
             return cards;
         }
 
+
+
+
+
         function getMyCardsSum(cards){
 
             function checkIfInArray(valueToCheck, array){
@@ -146,7 +150,7 @@ function Bot(sessId, plId){
             }
 
             var sum = [0];
-            var sumTemp = [0];
+            var sumTemp = [];
 
             for (i = 0; i < cards.length; i++){
 
@@ -162,7 +166,7 @@ function Bot(sessId, plId){
                     }
                     sum = [];
                     for (j=0; j<sumTemp.length; j++){
-                        if(!checkIfInArray(sumTemp[j], sum) && sumTemp[j] <= 21){
+                        if(!checkIfInArray(sumTemp[j], sum)){
                             sum.push(sumTemp[j]);
                         }
                     }
@@ -175,16 +179,23 @@ function Bot(sessId, plId){
 
 
             }
-            return sum;
+
+            sumTemp= [];
+            $.each(sum, function(index, element){
+                if(element <= 21){
+                    sumTemp.push(element);
+                }
+            });
+
+            return sumTemp;
         }
 
 
-        //
-        //
+
         //var testingCards = [
         //    {"color": "K", "number": 3},
         //    {"color": "K", "number": 1},
-        //    {"color": "K", "number": 5},
+        //    {"color": "K", "number": 4},
         //    {"color": "K", "number": 1},
         //    {"color": "K", "number": 1},
         //    {"color": "K", "number": 1}
