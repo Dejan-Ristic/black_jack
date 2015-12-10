@@ -1,26 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>jebem_picke</title>
+        <title>Blackjack</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bj.css') }}">
         <link rel="shortcut icon" href="{{ url_for('static', filename='img/spade.png') }}">
     </head>
     <body>
-
-        <div class="player-inputs">
-            <label for="player-name">Player Name</label>
-            <input type="text" id="player-name">
-            <label for="session-id">Session ID</label>
-            <input type="text" id="session-id" value="{{ sessId }}">
-            <button id="join-session-button">Join Session</button>
-        </div>
-
+        <h2>Bot Wars - Blackjack</h2>
         <div class="apis-testing">
             <button id="hit">Hit</button>
             <button id="hold">Hold</button>
         </div>
-
         <div class="scores">
             <div class="games-count">
                 <div>Total played</div>
@@ -29,14 +20,10 @@
             <div class="games-players">
             </div>
         </div>
-
         <div class="games-container">
         </div>
-
         <script src="{{ url_for('static', filename='js/jQuery-1.11.3.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/model.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bot.js') }}"></script>
         <script src="{{ url_for('static', filename='js/view.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/control.js') }}"></script>
-
     </body>
 </html>

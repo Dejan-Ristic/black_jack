@@ -1,17 +1,5 @@
 $(document).ready(function() {
 
-    $("#join-session-button").on("click", function () {
-        var sessId = $("#session-id").val();
-        var plName = $("#player-name").val();
-        if (!sessId || !plName) {
-            alert("fali session-id ili ime plejera");
-        }
-        else {
-            Bot.joinSession(sessId, plName);
-            //$(this).hide();
-        }
-    });
-
     // =================== REMOVE LATER ============================
     $("#hit").on("click", function () {
         bot.makeHit();
@@ -35,14 +23,12 @@ $(document).ready(function() {
             $scoresPlayers.empty();
 
             var houseWins = "";
-            houseWins += '<div class="games-count"><div>'+dealer["name"]+'</div>';
-            houseWins += '<div>'+sessionObject["house_wins"]+'</div></div>';
+            houseWins += '<div class="games-count"><div>'+dealer["name"]+'</div>'+'<div>'+sessionObject["house_wins"]+'</div></div>';
             $scoresPlayers.append(houseWins);
 
             $.each(players, function(index, player){
                 var playerWins = "";
-                playerWins += '<div class="games-count"><div>'+player["name"]+'</div>';
-                playerWins += '<div>'+player["wins"]+'</div></div>';
+                playerWins += '<div class="games-count"><div>'+player["name"]+'</div>'+'<div>'+player["wins"]+'</div></div>';
                 $scoresPlayers.append(playerWins);
             });
         }
@@ -57,8 +43,7 @@ $(document).ready(function() {
                 var gameDealer = "";
                 gameDealer += '<div class="res-container"><div class="results"><div class="name">'+dealer["name"]+'</div>';
                 $.each(dealer["hand"]["cards"], function(index, card){
-                    gameDealer += '<div class="cards"><span>|</span>'+card["color"]+'</div>';
-                    gameDealer += '<div class="cards">'+card["number"]+'<span>|</span></div>';
+                    gameDealer += '<div class="cards"><span>|</span>'+card["color"]+'</div>'+'<div class="cards">'+card["number"]+'<span>|</span></div>';
                 });
                 allResults += gameDealer+"</div>";
 
@@ -66,8 +51,7 @@ $(document).ready(function() {
                 $.each(players, function(index, player){
                     gamePlayer += '<div class="results"><div class="name">'+player["name"]+'</div>';
                     $.each(player["hand"]["cards"], function(index, card){
-                        gamePlayer += '<div class="cards"><span>|</span>'+card["color"]+'-</div>';
-                        gamePlayer += '<div class="cards">'+card["number"]+'<span>|</span></div>';
+                        gamePlayer += '<div class="cards"><span>|</span>'+card["color"]+'-</div>'+'<div class="cards">'+card["number"]+'<span>|</span></div>';
                     });
                     gamePlayer += "</div>";
                 });
