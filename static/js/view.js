@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+
+
     // =================== REMOVE LATER ============================
     $("#hit").on("click", function () {
         bot.makeHit();
@@ -9,7 +11,11 @@ $(document).ready(function() {
     });
     // =============================================================
 
-    displayGamesAndResults = function(response){
+
+
+    window.gamesCounter = 0;
+
+    window.displayGamesAndResults = function(response){
 
         function displayScores(sessionObject){
             var dealer = sessionObject["current_game"]["dealer"];
@@ -66,7 +72,8 @@ $(document).ready(function() {
 
             $gamesContainer.find(".res-container").last().remove();
 
-            if (!(games.length < bot.getGameNumber()) && games.length){
+            if ((games.length > gamesCounter) && games.length){
+                gamesCounter = games.length;
                 resultsToDisplay = getCards(games[games.length-1]);
                 $gamesContainer.append(resultsToDisplay);
             }

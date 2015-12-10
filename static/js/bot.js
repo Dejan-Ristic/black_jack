@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    var ApiCalls = {
+    window.ApiCalls = {
         "getSessionState":
             function(sessId, callback){
                 $.get("get-session-state/"+sessId, function (response) {
@@ -21,20 +21,16 @@ $(document).ready(function(){
             }
     };
 
+    var deckStart = {
+            "1": 28, "2": 28, "3": 28, "4": 28, "5": 28, "6": 28, "7": 28, "8": 28, "9": 28, "10": 28, "12": 28, "13": 28, "14": 28
+        };
+
     function Bot(sessId, plId){
 
         var sessionId = sessId;
         var playerId = plId;
-        var gameNumber = 0;
-        var deckStart = {
-            "1": 28, "2": 28, "3": 28, "4": 28, "5": 28, "6": 28, "7": 28, "8": 28, "9": 28, "10": 28, "12": 28, "13": 28, "14": 28
-        };
         var intervalWaitAllPlayers;
         var intervalCheckPlayerTurn;
-
-        this.getGameNumber = function(){
-            return gameNumber;
-        };
 
         (function(){
             intervalWaitAllPlayers = setInterval(function(){
@@ -59,7 +55,6 @@ $(document).ready(function(){
         function checkPlayerTurn(response){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()) {
                 displayGamesAndResults(response);
-                gameNumber = (response["games"].length+1 > gameNumber) ? response["games"].length+1 : gameNumber;
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
 
@@ -205,6 +200,8 @@ $(document).ready(function(){
         // =============================================================
 
     }
+
+
     // ************************************************************************************
 
     $.get("join-session/66/dejan", function (response) {
