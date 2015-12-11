@@ -466,9 +466,13 @@ class GameSession:
             awarded_wins = []
             for winner in winners:
                 for playa in self.players:
-                    if winner.id == playa.id and playa.id not in awarded_wins:
+                    if winner.id == playa.id and playa.id not in awarded_wins and \
+                        (winner.hand.get_value() > self.current_game.dealer.hand.get_value() or
+                             self.current_game.dealer.hand.busted):
                         playa.wins += 1
                         awarded_wins.append(playa.id)
+            if len(awarded_wins) == 0 and not self.current_game.dealer.hand.busted:
+                self.house_wins += 1
             self.games.append(self.current_game)
             self.previous_game = self.current_game
             players = []

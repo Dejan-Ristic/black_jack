@@ -3,19 +3,19 @@ $(document).ready(function(){
     window.ApiCalls = {
         "getSessionState":
             function(sessId, callback){
-                $.get("get-session-state/"+sessId, function (response) {
+                $.get("get-session-state/"+sessId).done(function(response){
                     callback(response);
                 });
             },
         "hit":
             function(sessId, plId, callback){
-                $.get("hit/"+sessId+"/"+plId, function (response) {
+                $.get("hit/"+sessId+"/"+plId).done(function(response){
                     callback(response);
                 });
             },
         "hold":
             function(sessId, plId, callback){
-                $.get("hold/"+sessId+"/"+plId, function (response) {
+                $.get("hold/"+sessId+"/"+plId).done(function(response){
                     callback(response);
                 });
             }
@@ -25,10 +25,12 @@ $(document).ready(function(){
             "1": 28, "2": 28, "3": 28, "4": 28, "5": 28, "6": 28, "7": 28, "8": 28, "9": 28, "10": 28, "12": 28, "13": 28, "14": 28
         };
 
+
     function Bot(sessId, plId){
 
         var sessionId = sessId;
         var playerId = plId;
+
         var intervalWaitAllPlayers;
         var intervalCheckPlayerTurn;
 
@@ -47,13 +49,13 @@ $(document).ready(function(){
 
         function checkPlayer(){
             clearInterval(intervalCheckPlayerTurn);
-            intervalCheckPlayerTurn = setInterval(function () {
+            intervalCheckPlayerTurn = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, checkPlayerTurn);
             }, 400);
         }
 
         function checkPlayerTurn(response){
-            if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()) {
+            if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
                 displayGamesAndResults(response);
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
@@ -67,20 +69,19 @@ $(document).ready(function(){
 
         function considerMove(response){
 
-            function getCurrentDeck(dealer, players) {
+            function getCurrentDeck(dealer, players){
+                function subtractCard(cardSet){
+                    $.each(cardSet, function(index, card){
+                        deck[card["number"]] -= 1;
+                    });
+                }
                 var deck = {};
                 $.each(deckStart, function(card, count){
                     deck[card] = count;
                 });
-                $.each(dealer["hand"]["cards"], function(index, card){
-                    var cardDealer = card["number"];
-                    deck[cardDealer] -= 1;
-                });
+                subtractCard(dealer["hand"]["cards"]);
                 $.each(players, function(index, player){
-                    $.each(player["hand"]["cards"], function(index, card){
-                        var cardPlayer = card["number"];
-                        deck[cardPlayer] -= 1;
-                    });
+                    subtractCard(player["hand"]["cards"]);
                 });
                 return deck;
             }
@@ -204,7 +205,7 @@ $(document).ready(function(){
 
     // ************************************************************************************
 
-    $.get("join-session/66/dejan", function (response) {
+    $.get("join-session/66/dejan", function (response){
         window.bot = new Bot(66, response['player_id']);
     });
 
