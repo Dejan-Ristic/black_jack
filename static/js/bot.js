@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    window.ApiCalls = {
+    var ApiCalls = {
         "getSessionState":
             function(sessId, callback){
                 $.get("get-session-state/"+sessId).done(function(response){
@@ -21,54 +21,43 @@ $(document).ready(function(){
             }
     };
 
-    var deckStart = {
-            "1": 28, "2": 28, "3": 28, "4": 28, "5": 28, "6": 28, "7": 28, "8": 28, "9": 28, "10": 28, "12": 28, "13": 28, "14": 28
-        };
-
+    var deckStart = {};
+    for(i=1; i<15; i++){
+        if(i != 11){
+            deckStart[i.toString()] = 28;
+        }
+    }
 
     function Bot(sessId, plId){
-
         var sessionId = sessId;
         var playerId = plId;
-
         var intervalWaitAllPlayers;
         var intervalCheckPlayerTurn;
-
         (function(){
             intervalWaitAllPlayers = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, gameStart);
             }, 400);
         })();
-
         function gameStart(response){
             if(response["current_game"]) {
                 clearInterval(intervalWaitAllPlayers);
                 checkPlayer();
             }
         }
-
         function checkPlayer(){
             clearInterval(intervalCheckPlayerTurn);
             intervalCheckPlayerTurn = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, checkPlayerTurn);
             }, 400);
         }
-
         function checkPlayerTurn(response){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
                 displayGamesAndResults(response);
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
-
-                console.log("************ session object ******************");
-                console.log(response);
-                console.log("***************** MY MOVE ********************");
             }
         }
-
-
         function considerMove(response){
-
             function getCurrentDeck(dealer, players){
                 function subtractCard(cardSet){
                     $.each(cardSet, function(index, card){
@@ -85,7 +74,6 @@ $(document).ready(function(){
                 });
                 return deck;
             }
-
             function countCardsLeft(deck){
                 var cardsNumber = 0;
                 $.each(deck, function(card, count){
@@ -93,7 +81,6 @@ $(document).ready(function(){
                 });
                 return cardsNumber;
             }
-
             function getMyCards(players){
                 var cards = [];
                 $.each(players, function(index, player){
@@ -106,87 +93,91 @@ $(document).ready(function(){
                 });
                 return cards;
             }
-
             function getCardsSums(cards){
-
-                function checkIfInArray(valueToCheck, array){
-                    var check = false;
-                    $.each(array, function(index, value){
-                        if (value == valueToCheck){
-                            return check = true;
-                        }
-                    });
-                    return check;
-                }
-
-                var sum = [0];
-                var sumTemp = [];
-
+                var sums = [0];
                 $.each(cards, function(index, card){
-                    switch (card["number"]){
-                        case 1:
-                            $.each(sum, function(index, element){
-                                sumTemp[index] = parseInt(element)+1;
-                                sumTemp[sum.length+index] = parseInt(element)+11;
-                            });
-                            sum = [];
-                            $.each(sumTemp, function(index, element){
-                                if(!checkIfInArray(element, sum)){
-                                    sum.push(element);
-                                }
-                            });
-                            break;
-                        default:
-                            var valueToAdd = (card["number"] < 10) ? parseInt(card["number"]) : 10;
-                            $.each(sum, function(index, element){
-                                sum[index] += valueToAdd;
-                            });
+                    if (card["number"] == 1 && sums.length == 1 && sums[0] <= 10) {
+                        sums[0] += 1;
+                        sums[1] = sums[0] + 10;
+                    }
+                    else {
+                        $.each(sums, function(index, element){
+                            sums[index] += (card["number"] < 10) ? parseInt(card["number"]) : 10;
+                            sums.splice(index, (sums[index] > 21) ? 1 : 0);
+                        });
                     }
                 });
-
-                var sumUnique= [];
-                $.each(sum, function(index, element){
-                    if(element <= 21){
-                        sumUnique.push(element);
-                    }
-                });
-
-                return sumUnique;
+                return sums;
             }
 
 
 
             //var testingCards = [
+            //    {"color": "K", "number": 10},
+            //    {"color": "K", "number": 8},
+            //    {"color": "K", "number": 2},
             //    {"color": "K", "number": 1},
-            //    {"color": "K", "number": 3},
-            //    {"color": "K", "number": 1},
-            //    {"color": "K", "number": 4},
-            //    {"color": "K", "number": 1},
-            //    {"color": "K", "number": 1}
+            //    {"color": "K", "number": 5}
             //];
+            //var myCardsSums = getCardsSums(testingCards);
+
+
 
 
             var dealer = response["current_game"]["dealer"];
             var players = response["current_game"]["players"];
 
+            var deckCurrent = getCurrentDeck(dealer, players);
+            var cardsLeftTotal = countCardsLeft(deckCurrent);
             var myCards = getMyCards(players);
             var myCardsSums = getCardsSums(myCards);
 
 
+        //    ******************************************************************************************
 
-            var deckCurrent = getCurrentDeck(dealer, players);
+            function maxHitNumber(sums){
+                return (sums.length > 1) ? ((sums[0] > sums[1]) ? sums[0] : sums[1]) : sums[0];
+            }
 
-            var cardsLeftTotal = countCardsLeft(deckCurrent);
+            var myMaxNumber = 21 - maxHitNumber(myCardsSums);
 
-            console.log("total cards left");
-            console.log(cardsLeftTotal);
-            console.log("these are my cards");
-            console.log(myCards);
-            console.log("these are my sums");
-            console.log(myCardsSums)
+            function countGoodCards(number) {
+                var countCards = 0;
+                var deckTemp = {};
+                $.each(deckCurrent, function (card, count) {
+                    if(parseInt(card) < 10) {
+                        deckTemp[card] = count;
+                    }
+                    else{
+                        if (deckTemp.hasOwnProperty("10")){
+                            deckTemp["10"] += count;
+                        }
+                        else deckTemp["10"] = count;
+                    }
+                });
+                for (var i = 1; i <= number; i++) {
+                    if (i < 11){
+                        countCards += deckTemp[i];
+                    }
+                }
+                return countCards;
+            }
+
+
+            var probability = (countGoodCards(myMaxNumber)/cardsLeftTotal*100).toFixed(2);
+            console.log("probability is "+probability+"%");
+
+
+
+
 
         }
-
+        function hit(){
+            ApiCalls.hit(sessionId, playerId, checkPlayer);
+        }
+        function hold(){
+            ApiCalls.hold(sessionId, playerId, checkPlayer);
+        }
 
 
 
@@ -201,12 +192,7 @@ $(document).ready(function(){
         // =============================================================
 
     }
-
-
-    // ************************************************************************************
-
-    $.get("join-session/66/dejan", function (response){
+    $.get("join-session/66/dejan").done(function (response){
         window.bot = new Bot(66, response['player_id']);
     });
-
 });
