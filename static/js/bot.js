@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
     var ApiCalls = {
         "getSessionState":
             function(sessId, callback){
@@ -20,14 +19,12 @@ $(document).ready(function(){
                 });
             }
     };
-
     var deckStart = {};
     for(i=1; i<15; i++){
         if(i != 11){
             deckStart[i.toString()] = 28;
         }
     }
-
     function Bot(sessId, plId){
         var sessionId = sessId;
         var playerId = plId;
@@ -110,7 +107,7 @@ $(document).ready(function(){
                 return sums;
             }
 
-
+        //    ******************************************************************************************
 
             //var testingCards = [
             //    {"color": "K", "number": 10},
