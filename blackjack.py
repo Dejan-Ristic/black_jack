@@ -12,7 +12,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.debug = False
 
-PLAYERS = 2
+PLAYERS = 3
 
 
 def json_rep(obj, exclude_fields=None, include_fields=None):
