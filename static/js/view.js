@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    window.gamesCounter = 0;
+    var innerGamesCounter = 0;
     window.displayGamesAndResults = function(response){
         function displayScores(sessionObject){
             var houseWins = "";
@@ -22,7 +22,6 @@ $(document).ready(function() {
         }
         function displayCards(sessionObject){
             var resultsToDisplay = "";
-            var games = sessionObject["games"];
             var $gamesContainer = $(".games-container");
             function getCards(game){
                 var dealer = game["dealer"];
@@ -49,9 +48,9 @@ $(document).ready(function() {
                 return allResults;
             }
             $gamesContainer.find(".res-container").last().remove();
-            if ((games.length > gamesCounter) && games.length){
-                gamesCounter = games.length;
-                resultsToDisplay = getCards(games[games.length-1]);
+            if (gamesCounter > innerGamesCounter){
+                innerGamesCounter = gamesCounter;
+                resultsToDisplay = getCards(sessionObject["games"][innerGamesCounter-1]);
                 $gamesContainer.append(resultsToDisplay);
             }
             resultsToDisplay = getCards(sessionObject["current_game"]);
