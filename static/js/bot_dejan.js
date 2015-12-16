@@ -72,14 +72,9 @@ $(document).ready(function(){
         }
     }
 
-    function Bot(sessId, plId, reset){
+    function Bot(sessId, plId){
         var sessionId = sessId;
         var playerId = plId;
-        var deckCurrent = {};
-
-        //var resetPeriod = reset;
-        //var resetCounter = 0;
-
         var intervalWaitAllPlayers;
         var intervalCheckPlayerTurn;
         (function(){
@@ -94,13 +89,6 @@ $(document).ready(function(){
             }
         }
         function checkPlayer(){
-//****************************************************************************************
-            if (gamesCounter == 200) {
-                clearInterval(intervalCheckPlayerTurn);
-                return;
-            }
-            clearInterval(intervalCheckPlayerTurn);
-//****************************************************************************************
             intervalCheckPlayerTurn = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, checkPlayerTurn);
             }, 400);
@@ -109,52 +97,24 @@ $(document).ready(function(){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
                 if(response["games"].length > gamesCounter){
                     gamesCounter = response["games"].length;
-                    //resetCounter += 1;
                 }
-                //displayGamesAndResults(response);
+                displayGamesAndResults(response);
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
             }
         }
 
-
-
         function considerMove(response){
-
-
-
-            var dealer = response["current_game"]["dealer"];
+           var dealer = response["current_game"]["dealer"];
             var players = response["current_game"]["players"];
-            //var pastGames = response["games"].slice(-resetCounter);
             var allPlayersCards = [];
-            //var pastGamesCards = [];
-
-            //resetCounter = ((gamesCounter-4)%resetPeriod == 0 && gamesCounter > resetPeriod) ? 0 : resetCounter;
-
             allPlayersCards.push(dealer["hand"]["cards"]);
             $.each(players, function(index, player){
                 var me = (player["id"].toString() == playerId.toString());
                 me ? allPlayersCards.unshift(player["hand"]["cards"]) : allPlayersCards.push(player["hand"]["cards"]);
             });
-
-            //$.each(pastGames, function(index, pastGame){
-            //    var dealerPast = pastGame["dealer"]["hand"]["cards"];
-            //    pastGamesCards.push(dealerPast);
-            //    $.each(pastGame["players"], function(index, pastPlayer){
-            //        var playerPast = pastPlayer["hand"]["cards"];
-            //        pastGamesCards.push(playerPast);
-            //    });
-            //});
-
-            //var allCardsToRemove = pastGamesCards.concat(allPlayersCards);
-
-            deckCurrent = BotMethods.getCurrentDeck(allPlayersCards);
-
+            var deckCurrent = BotMethods.getCurrentDeck(allPlayersCards);
             var cardsLeftTotal = BotMethods.countCardsLeft(deckCurrent);
-
-        //    ******************************************************************************************
-
-
             var myMaxNumber = 21 - BotMethods.greaterSum(BotMethods.getCardsSums(allPlayersCards[0]));
 
             function countGoodCards(number) {
@@ -177,13 +137,7 @@ $(document).ready(function(){
                 }
                 return countCards;
             }
-
-
             var probability = Math.floor(countGoodCards(myMaxNumber)/cardsLeftTotal*100);
-
-
-        //    ******************************************************************************************
-
             function compareSums(cardSets){
                 var meIsBest = true;
                 var myBestSum = BotMethods.greaterSum(BotMethods.getCardsSums(cardSets[0]));
@@ -197,10 +151,10 @@ $(document).ready(function(){
                 return meIsBest;
             }
 
-
-
-
-            if (!compareSums(allPlayersCards)) {
+            if (myMaxNumber == 0) {
+                hold();
+            }
+            else if (!compareSums(allPlayersCards)) {
                 hit();
             }
             else if (probability > 30) {
@@ -209,11 +163,7 @@ $(document).ready(function(){
             else {
                 hold();
             }
-
-
         }
-
-
 
         function hit(){
             ApiCalls.hit(sessionId, playerId, checkPlayer);
@@ -221,24 +171,11 @@ $(document).ready(function(){
         function hold(){
             ApiCalls.hold(sessionId, playerId, checkPlayer);
         }
-
-
-
-        // =================== REMOVE LATER ============================
-        this.makeHit = function(){
-            hit();
-        };
-        this.makeHold = function(){
-            hold();
-        };
-        // =============================================================
-
-
     }
-    $.get("join-session/66/dejan_per_3").done(function (response){
+    $.get("join-session/66/dejan").done(function (response){
         window.bot = new Bot(66, response['player_id']);
     });
-    $.get("join-session/66/dejan_per_3").done(function (response){
+    $.get("join-session/66/dejan").done(function (response){
         window.bot = new Bot(66, response['player_id']);
     });
 });

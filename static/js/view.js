@@ -57,19 +57,6 @@ $(document).ready(function() {
             $gamesContainer.append(resultsToDisplay);
         }
         displayScores(response);
-        //displayCards(response);
+        displayCards(response);
     };
-
-
-
-    // =================== REMOVE LATER ============================
-    $("#hit").on("click", function () {
-        bot.makeHit();
-    });
-    $("#hold").on("click", function () {
-        bot.makeHold();
-    });
-    // =============================================================
-
-
 });
