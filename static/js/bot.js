@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
     var ApiCalls = {
         "getSessionState":
             function(sessId, callback){
@@ -20,20 +19,22 @@ $(document).ready(function(){
                 });
             }
     };
-
     var BotMethods = {
-        "getCurrentDeck":
-            function(cardSets){
-                var deck = {};
-                $.each(deckStart, function(card, count){
-                    deck[card] = count;
-                });
+        "resetDeck":
+            function(deck){
+                for(i=1; i<15; i++){
+                    if(i != 11){
+                        deck[i.toString()] = 28;
+                    }
+                }
+            },
+        "setCurrentDeck":
+            function(cardSets, deck){
                 $.each(cardSets, function(index, cardSet){
                     $.each(cardSet, function(index, card){
                         deck[card["number"]] -= 1;
                     });
                 });
-                return deck;
             },
         "countCardsLeft":
             function (deck){
@@ -68,17 +69,10 @@ $(document).ready(function(){
 
     window.gamesCounter = 0;
 
-    var deckStart = {};
-    for(i=1; i<15; i++){
-        if(i != 11){
-            deckStart[i.toString()] = 28;
-        }
-    }
-
-
     function Bot(sessId, plId){
         var sessionId = sessId;
         var playerId = plId;
+        var deckCurrent = {};
         var intervalWaitAllPlayers;
         var intervalCheckPlayerTurn;
         (function(){
@@ -89,6 +83,7 @@ $(document).ready(function(){
         function gameStart(response){
             if(response["current_game"]) {
                 clearInterval(intervalWaitAllPlayers);
+                BotMethods.resetDeck(deckCurrent);
                 checkPlayer();
             }
         }
@@ -106,7 +101,12 @@ $(document).ready(function(){
         }
         function checkPlayerTurn(response){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
-                gamesCounter = (response["games"].length > gamesCounter) ? response["games"].length : gamesCounter;
+                if(response["games"].length > gamesCounter){
+                    gamesCounter = response["games"].length;
+                    if((gamesCounter-4)%3 == 0 && gamesCounter > 3){
+                        BotMethods.resetDeck(deckCurrent);
+                    }
+                }
                 displayGamesAndResults(response);
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
@@ -127,7 +127,11 @@ $(document).ready(function(){
                 me ? allPlayersCards.unshift(player["hand"]["cards"]) : allPlayersCards.push(player["hand"]["cards"]);
             });
 
-            var deckCurrent = BotMethods.getCurrentDeck(allPlayersCards);
+
+            BotMethods.setCurrentDeck(allPlayersCards, deckCurrent);
+
+            console.log(deckCurrent);
+
             var cardsLeftTotal = BotMethods.countCardsLeft(deckCurrent);
 
 
@@ -179,15 +183,15 @@ $(document).ready(function(){
 
 
 
-            if (!compareSums(allPlayersCards)) {
-                hit();
-            }
-            else if (probability > 30) {
-                hit();
-            }
-            else {
-                hold();
-            }
+            //if (!compareSums(allPlayersCards)) {
+            //    hit();
+            //}
+            //else if (probability > 30) {
+            //    hit();
+            //}
+            //else {
+            //    hold();
+            //}
 
 
         }
