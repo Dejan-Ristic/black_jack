@@ -20,21 +20,18 @@ $(document).ready(function(){
             }
     };
     var BotMethods = {
-        "resetDeck":
-            function(deck){
-                for(i=1; i<15; i++){
-                    if(i != 11){
-                        deck[i.toString()] = 28;
-                    }
-                }
-            },
-        "setCurrentDeck":
-            function(cardSets, deck){
+        "getCurrentDeck":
+            function(cardSets){
+                var deck = {};
+                $.each(deckStart, function (number, count){
+                    deck[number] = count;
+                });
                 $.each(cardSets, function(index, cardSet){
                     $.each(cardSet, function(index, card){
                         deck[card["number"]] -= 1;
                     });
                 });
+                return deck;
             },
         "countCardsLeft":
             function (deck){
@@ -68,22 +65,30 @@ $(document).ready(function(){
     };
 
     window.gamesCounter = 0;
+    var deckStart = {};
+    for(i=1; i<15; i++){
+        if(i != 11){
+            deckStart[i.toString()] = 28;
+        }
+    }
 
     function Bot(sessId, plId){
         var sessionId = sessId;
         var playerId = plId;
         var deckCurrent = {};
+
+        var resetCounter = 0;
+
         var intervalWaitAllPlayers;
         var intervalCheckPlayerTurn;
         (function(){
             intervalWaitAllPlayers = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, gameStart);
-            }, 600);
+            }, 400);
         })();
         function gameStart(response){
             if(response["current_game"]) {
                 clearInterval(intervalWaitAllPlayers);
-                BotMethods.resetDeck(deckCurrent);
                 checkPlayer();
             }
         }
@@ -97,15 +102,14 @@ $(document).ready(function(){
 //****************************************************************************************
             intervalCheckPlayerTurn = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, checkPlayerTurn);
-            }, 600);
+            }, 400);
         }
         function checkPlayerTurn(response){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
                 if(response["games"].length > gamesCounter){
                     gamesCounter = response["games"].length;
-                    if((gamesCounter-4)%3 == 0 && gamesCounter > 3){
-                        BotMethods.resetDeck(deckCurrent);
-                    }
+
+                    resetCounter += 1;
                 }
                 displayGamesAndResults(response);
                 clearInterval(intervalCheckPlayerTurn);
@@ -116,6 +120,8 @@ $(document).ready(function(){
 
 
         function considerMove(response){
+
+
 
             var dealer = response["current_game"]["dealer"];
             var players = response["current_game"]["players"];
@@ -128,10 +134,28 @@ $(document).ready(function(){
             });
 
 
-            BotMethods.setCurrentDeck(allPlayersCards, deckCurrent);
 
-            console.log(deckCurrent);
 
+
+            if((gamesCounter-4)%3 == 0 && gamesCounter > 3){
+                console.log("prvi u if-u");
+                console.log("reset counter je "+resetCounter);
+                console.log(response["games"].slice(-resetCounter));
+                resetCounter = 0;
+            }
+            else{
+                console.log("prvi u else-u");
+                console.log("reset counter je "+resetCounter);
+                console.log(response["games"].slice(-resetCounter));
+            }
+
+
+
+
+
+
+
+            deckCurrent = BotMethods.getCurrentDeck(allPlayersCards);
             var cardsLeftTotal = BotMethods.countCardsLeft(deckCurrent);
 
 
