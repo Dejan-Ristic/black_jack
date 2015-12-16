@@ -72,12 +72,13 @@ $(document).ready(function(){
         }
     }
 
-    function Bot(sessId, plId){
+    function Bot(sessId, plId, reset){
         var sessionId = sessId;
         var playerId = plId;
         var deckCurrent = {};
 
-        var resetCounter = 0;
+        //var resetPeriod = reset;
+        //var resetCounter = 0;
 
         var intervalWaitAllPlayers;
         var intervalCheckPlayerTurn;
@@ -94,7 +95,7 @@ $(document).ready(function(){
         }
         function checkPlayer(){
 //****************************************************************************************
-            if (gamesCounter == 100) {
+            if (gamesCounter == 200) {
                 clearInterval(intervalCheckPlayerTurn);
                 return;
             }
@@ -108,10 +109,9 @@ $(document).ready(function(){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
                 if(response["games"].length > gamesCounter){
                     gamesCounter = response["games"].length;
-
-                    resetCounter += 1;
+                    //resetCounter += 1;
                 }
-                displayGamesAndResults(response);
+                //displayGamesAndResults(response);
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
             }
@@ -125,7 +125,11 @@ $(document).ready(function(){
 
             var dealer = response["current_game"]["dealer"];
             var players = response["current_game"]["players"];
+            //var pastGames = response["games"].slice(-resetCounter);
             var allPlayersCards = [];
+            //var pastGamesCards = [];
+
+            //resetCounter = ((gamesCounter-4)%resetPeriod == 0 && gamesCounter > resetPeriod) ? 0 : resetCounter;
 
             allPlayersCards.push(dealer["hand"]["cards"]);
             $.each(players, function(index, player){
@@ -133,31 +137,20 @@ $(document).ready(function(){
                 me ? allPlayersCards.unshift(player["hand"]["cards"]) : allPlayersCards.push(player["hand"]["cards"]);
             });
 
+            //$.each(pastGames, function(index, pastGame){
+            //    var dealerPast = pastGame["dealer"]["hand"]["cards"];
+            //    pastGamesCards.push(dealerPast);
+            //    $.each(pastGame["players"], function(index, pastPlayer){
+            //        var playerPast = pastPlayer["hand"]["cards"];
+            //        pastGamesCards.push(playerPast);
+            //    });
+            //});
 
-
-
-
-            if((gamesCounter-4)%3 == 0 && gamesCounter > 3){
-                console.log("prvi u if-u");
-                console.log("reset counter je "+resetCounter);
-                console.log(response["games"].slice(-resetCounter));
-                resetCounter = 0;
-            }
-            else{
-                console.log("prvi u else-u");
-                console.log("reset counter je "+resetCounter);
-                console.log(response["games"].slice(-resetCounter));
-            }
-
-
-
-
-
-
+            //var allCardsToRemove = pastGamesCards.concat(allPlayersCards);
 
             deckCurrent = BotMethods.getCurrentDeck(allPlayersCards);
-            var cardsLeftTotal = BotMethods.countCardsLeft(deckCurrent);
 
+            var cardsLeftTotal = BotMethods.countCardsLeft(deckCurrent);
 
         //    ******************************************************************************************
 
@@ -207,15 +200,15 @@ $(document).ready(function(){
 
 
 
-            //if (!compareSums(allPlayersCards)) {
-            //    hit();
-            //}
-            //else if (probability > 30) {
-            //    hit();
-            //}
-            //else {
-            //    hold();
-            //}
+            if (!compareSums(allPlayersCards)) {
+                hit();
+            }
+            else if (probability > 30) {
+                hit();
+            }
+            else {
+                hold();
+            }
 
 
         }
@@ -242,7 +235,10 @@ $(document).ready(function(){
 
 
     }
-    $.get("join-session/66/dejan").done(function (response){
+    $.get("join-session/66/dejan_per_3").done(function (response){
+        window.bot = new Bot(66, response['player_id']);
+    });
+    $.get("join-session/66/dejan_per_3").done(function (response){
         window.bot = new Bot(66, response['player_id']);
     });
 });

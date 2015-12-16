@@ -57,7 +57,7 @@ $(document).ready(function() {
             $gamesContainer.append(resultsToDisplay);
         }
         displayScores(response);
-        displayCards(response);
+        //displayCards(response);
     };
 
 
