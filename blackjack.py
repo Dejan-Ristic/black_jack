@@ -12,7 +12,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.debug = False
 
-PLAYERS = 2
+PLAYERS = 3
 
 
 def json_rep(obj, exclude_fields=None, include_fields=None):
@@ -690,6 +690,6 @@ def index():
 
 
 if __name__ == "__main__":
-    sess = GameSession(sid=66)
+    sess = GameSession(sid=111111)
     sess.save()
     app.run(port=9999, host="127.0.0.1")
