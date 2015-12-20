@@ -153,7 +153,7 @@ $(document).ready(function(){
     $.get("join-session/111111/dejan").done(function (response){
         var bot2 = new Bot(111111, response['player_id']);
     });
-    $.get("join-session/111111/dejan").done(function (response){
-        var bot3 = new Bot(111111, response['player_id']);
-    });
+    //$.get("join-session/111111/dejan").done(function (response){
+    //    var bot3 = new Bot(111111, response['player_id']);
+    //});
 });
