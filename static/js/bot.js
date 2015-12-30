@@ -34,17 +34,18 @@ $(document).ready(function(){
                         checkPlayer();
                     }
                 });
-            }, 400);
+            }, 1400);
         })();
 
         function checkPlayer(){
             intervalCheckPlayerTurn = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, checkPlayerTurn);
-            }, 400);
+            }, 1400);
         }
 
         function checkPlayerTurn(response){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
+                displayGamesAndResults(response);
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
             }
@@ -121,14 +122,14 @@ $(document).ready(function(){
             var dealer = response["current_game"]["dealer"];
             var players = response["current_game"]["players"];
             var allPlayersCards = [];
-            var deckCurrent = getCurrentDeck(allPlayersCards);
-            var cardsLeftTotal = countCardsLeft();
             allPlayersCards.push(dealer["hand"]["cards"]);
             $.each(players, function(index, player){
                 var amI = (player["id"].toString() == playerId.toString());
                 amI ? allPlayersCards.unshift(player["hand"]["cards"])
                     : allPlayersCards.push(player["hand"]["cards"]);
             });
+            var deckCurrent = getCurrentDeck(allPlayersCards);
+            var cardsLeftTotal = countCardsLeft();
             var myMaxNumber = 21 - getBestSum(allPlayersCards[0]);
             var probability = Math.floor(countGoodCards(myMaxNumber)/cardsLeftTotal*100);
 
@@ -149,6 +150,15 @@ $(document).ready(function(){
 
     $.get("join-session/111111/dejan").done(function (response){
         var bot = new Bot(111111, response['player_id']);
+    });
+    $.get("join-session/111111/dejan").done(function (response){
+        var bot2 = new Bot(111111, response['player_id']);
+    });
+    $.get("join-session/111111/dejan").done(function (response){
+        var bot5 = new Bot(111111, response['player_id']);
+    });
+    $.get("join-session/111111/dejan").done(function (response){
+        var bot6 = new Bot(111111, response['player_id']);
     });
 
  });
