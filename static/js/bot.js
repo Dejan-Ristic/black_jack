@@ -34,20 +34,17 @@ $(document).ready(function(){
                         checkPlayer();
                     }
                 });
-            }, 1400);
+            }, 400);
         })();
 
         function checkPlayer(){
             intervalCheckPlayerTurn = setInterval(function(){
                 ApiCalls.getSessionState(sessionId, checkPlayerTurn);
-            }, 1400);
+            }, 400);
         }
 
         function checkPlayerTurn(response){
             if(response["current_game"]["current_player"]["id"].toString() == playerId.toString()){
-
-                displayGamesAndResults(response);
-
                 clearInterval(intervalCheckPlayerTurn);
                 considerMove(response);
             }
@@ -73,8 +70,6 @@ $(document).ready(function(){
                 return cardsNumber;
             }
 
-
-
             function getBestSum(cards) {
                 var sums = [0];
                 $.each(cards, function (index, card) {
@@ -92,8 +87,6 @@ $(document).ready(function(){
                 return (sums.length > 1) ? ((sums[0] > sums[1]) ? sums[0] : sums[1]) : sums[0];
             }
 
-
-
             function countGoodCards(number) {
                 var countCards = 0;
                 var deckTemp = {};
@@ -109,17 +102,22 @@ $(document).ready(function(){
                 }
                 return countCards;
             }
+
             function compareSums(cardSets){
                 var meIsBest = true;
                 var myBestSum = getBestSum(cardSets[0]);
                 $.each(cardSets.slice(1), function(index, cardSet){
                     var oppBestSum = getBestSum(cardSet);
-                    if ((index == 0 && (myBestSum <= oppBestSum)) ||
-                        (index != 0 && oppBestSum && (myBestSum < oppBestSum)))
+                    if (index == 0 && (myBestSum <= oppBestSum)){
                         return meIsBest = false;
+                    }
+                    else if(index != 0 && oppBestSum && (myBestSum < oppBestSum)) {
+                        return meIsBest = false;
+                    }
                 });
                 return meIsBest;
             }
+
             var dealer = response["current_game"]["dealer"];
             var players = response["current_game"]["players"];
             var allPlayersCards = [];
@@ -143,17 +141,14 @@ $(document).ready(function(){
             else
                 move("hold");
         }
+
         function move(move){
             ApiCalls.move(sessionId, playerId, move, checkPlayer);
         }
     }
+
     $.get("join-session/111111/dejan").done(function (response){
         var bot = new Bot(111111, response['player_id']);
     });
-    $.get("join-session/111111/dejan").done(function (response){
-        var bot2 = new Bot(111111, response['player_id']);
-    });
-    //$.get("join-session/111111/dejan").done(function (response){
-    //    var bot3 = new Bot(111111, response['player_id']);
-    //});
-});
+
+ });

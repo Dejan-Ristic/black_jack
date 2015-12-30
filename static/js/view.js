@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var innerGamesCounter = 0;
+    //var innerGamesCounter = 0;
     window.displayGamesAndResults = function(response){
         function displayScores(sessionObject){
             var houseWins = "";
